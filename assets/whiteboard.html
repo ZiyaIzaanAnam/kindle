@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whiteboard
+    </title>
+    <link rel="stylesheet" href="whiteboard.css">
+    <script src="whiteboard.js" defer></script>
+</head>
+
+<body>
+    <div class="container">
+
+        <div id="hamburger">
+            <img class="hamburger-icon-1" id="hamburger-icon-1" src="./assets/hamburger.svg" width="50px"
+                height="50px" />
+            <img class="hamburger-icon-2 hamburger-icon-2-closed" id="hamburger-icon-2" src="./assets/close.svg"
+                width="30px" height="30px" />
+        </div>
+        <section class="tools-board tools-board-closed" id="tools-board">
+            <div class="row colors">
+                <div class="title">Colors</div>
+                <ul class="options">
+                    <li class="option selected"></li>
+                    <li class="option"></li>
+                    <li class="option"></li>
+                    <li class="option"></li>
+                    <li class="option">
+                        <input type="color" id="color-picker" value="#4A98F7">
+                    </li>
+                </ul>
+            </div>
+
+            <div class="row">
+                <div class="title">Tools</div>
+                <ul class="options">
+                    <li class="option active tool" id="brush">
+                        <img class="icon" src="assets/brush.svg" alt="">
+                        <span>Brush</span>
+                    </li>
+                    <li class="option tool" id="eraser">
+                        <img class="icon" src="assets/eraser.svg" alt="">
+                        <span>Eraser</span>
+                    </li>
+                    <li class="option tool" id="size">
+                        <input type="range" id="size-slider" min="1" max="50" value="5">
+                        <label for="size-slider">Width</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="row">
+            <div class="row">
+                <button class="clear">Clear</button>
+                <button class="save">WIP</button>
+            </div>
+            <div class="mid">
+                </a>
+            </div>
+        </section>
+        <section class="drawing-board" id="drawing-board">
+            <canvas></canvas>
+        </section>
+    </div>
+</body>
+
+</html>
