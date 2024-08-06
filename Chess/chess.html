@@ -15,6 +15,7 @@
 <div style="width:600px;margin:auto;position:relative;">
 
     <div id="board">
+        <!-- Board squares -->
         <div id="final" class="odd">
             <div id="81" class="square" data-square="8-a"></div>
             <div id="82" class="square" data-square="8-b"></div>
@@ -133,6 +134,7 @@
 <script>
     // Define the initial setup of pieces
     const initialBoardState = [
+        // White pieces
         { id: '11', piece: 'rook', color: 'white' },
         { id: '12', piece: 'knight', color: 'white' },
         { id: '13', piece: 'bishop', color: 'white' },
@@ -141,7 +143,6 @@
         { id: '16', piece: 'bishop', color: 'white' },
         { id: '17', piece: 'knight', color: 'white' },
         { id: '18', piece: 'rook', color: 'white' },
-        // Add pawns
         { id: '21', piece: 'pawn', color: 'white' },
         { id: '22', piece: 'pawn', color: 'white' },
         { id: '23', piece: 'pawn', color: 'white' },
@@ -150,24 +151,23 @@
         { id: '26', piece: 'pawn', color: 'white' },
         { id: '27', piece: 'pawn', color: 'white' },
         { id: '28', piece: 'pawn', color: 'white' },
-        // Add black pieces
-        { id: '11', piece: 'rook', color: ' black' },
-        { id: '12', piece: 'knight', color: ' black' },
-        { id: '13', piece: 'bishop', color: ' black' },
-        { id: '14', piece: 'queen', color: ' black' },
-        { id: '15', piece: 'king', color: ' black' },
-        { id: '16', piece: 'bishop', color: ' black' },
-        { id: '17', piece: 'knight', color: ' black' },
-        { id: '18', piece: 'rook', color: ' black' },
-        // Add pawns
-        { id: '21', piece: 'pawn', color: ' black' },
-        { id: '22', piece: 'pawn', color: ' black' },
-        { id: '23', piece: 'pawn', color: ' black' },
-        { id: '24', piece: 'pawn', color: ' black' },
-        { id: '25', piece: 'pawn', color: ' black' },
-        { id: '26', piece: 'pawn', color: ' black' },
-        { id: '27', piece: 'pawn', color: ' black' },
-        { id: '28', piece: 'pawn', color: ' black' },
+        // Black pieces
+        { id: '71', piece: 'rook', color: 'black' },
+        { id: '72', piece: 'knight', color: 'black' },
+        { id: '73', piece: 'bishop', color: 'black' },
+        { id: '74', piece: 'queen', color: 'black' },
+        { id: '75', piece: 'king', color: 'black' },
+        { id: '76', piece: 'bishop', color: 'black' },
+        { id: '77', piece: 'knight', color: 'black' },
+        { id: '78', piece: 'rook', color: 'black' },
+        { id: '81', piece: 'pawn', color: 'black' },
+        { id: '82', piece: 'pawn', color: 'black' },
+        { id: '83', piece: 'pawn', color: 'black' },
+        { id: '84', piece: 'pawn', color: 'black' },
+        { id: '85', piece: 'pawn', color: 'black' },
+        { id: '86', piece: 'pawn', color: 'black' },
+        { id: '87', piece: 'pawn', color: 'black' },
+        { id: '88', piece: 'pawn', color: 'black' }
     ];
 
     function resetBoard() {
@@ -190,26 +190,13 @@
 
         // Reset turn indicator
         document.getElementById('turn').textContent = "White's Turn";
-        
-        // Reset any other game state variables if applicable
     }
 
     document.getElementById('reloadJsButton').addEventListener('click', function() {
         resetBoard();
-        
-        // Optionally reload scripts if required
-        // var scripts = document.querySelectorAll('script[src]');
-        // scripts.forEach(function(script) {
-        //     var newScript = document.createElement('script');
-        //     newScript.src = script.src;
-        //     script.parentNode.removeChild(script);
-        //     document.body.appendChild(newScript);
-        // });
     });
-</script>
 
-<script type="text/javascript">
-    function boardAnimate(){
+    function boardAnimate() {
         const board = document.getElementById('board');
         const elements = board.getElementsByClassName('piece');
         if (board.classList.contains('animate')) {
@@ -228,6 +215,9 @@
             }
         }
     }
+
+    // Optionally call boardAnimate or attach it to an event
+    // boardAnimate();
 </script>
 </body>
 </html>
