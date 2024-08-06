@@ -15,7 +15,7 @@
 <div style="width:600px;margin:auto;position:relative;">
 
     <div id="board">
-        <div id="final" class="odd">
+                <div id="final" class="odd">
             <div id="81" class="square" data-square="8-a"></div>
             <div id="82" class="square" data-square="8-b"></div>
             <div id="83" class="square" data-square="8-c"></div>
@@ -98,7 +98,7 @@
     </div>
 
     <div id="sematary">
-        <div id="whiteSematary">
+                <div id="whiteSematary">
             <div class="pawn"></div>
             <div class="knight"></div>
             <div class="bishop"></div>
@@ -113,33 +113,54 @@
             <div class="queen"></div>
         </div>
     </div>
+
+    </div>
 </div>
 
 <p id="turn">White's Turn</p>
 <div style="position:absolute;left:20px;bottom:20px;"></div>
 <button id="reloadJsButton">Restart</button>
 
-<script type="text/javascript" id="script1" src="pieces/Piece.js"></script>
-<script type="text/javascript" id="script2" src="pieces/King.js"></script>
-<script type="text/javascript" id="script3" src="pieces/Queen.js"></script>
-<script type="text/javascript" id="script4" src="pieces/Rook.js"></script>
-<script type="text/javascript" id="script5" src="pieces/Bishop.js"></script>
-<script type="text/javascript" id="script6" src="pieces/Knight.js"></script>
-<script type="text/javascript" id="script7" src="pieces/Pawn.js"></script>
-<script type="text/javascript" id="script8" src="ai.js"></script>
-<script type="text/javascript" id="script9" src="Game.js"></script>
-<script type="text/javascript" id="script10" src="Board.js"></script>
+<script type="text/javascript" src="pieces/Piece.js"></script>
+<script type="text/javascript" src="pieces/King.js"></script>
+<script type="text/javascript" src="pieces/Queen.js"></script>
+<script type="text/javascript" src="pieces/Rook.js"></script>
+<script type="text/javascript" src="pieces/Bishop.js"></script>
+<script type="text/javascript" src="pieces/Knight.js"></script>
+<script type="text/javascript" src="pieces/Pawn.js"></script>
+<script type="text/javascript" src="ai.js"></script>
+<script type="text/javascript" src="Game.js"></script>
+<script type="text/javascript" src="Board.js"></script>
 
 <script>
-    document.getElementById('reloadJsButton').addEventListener('click', function() {
-        var scripts = document.querySelectorAll('script[src]');
+    function resetBoard() {
+        // Implement logic to reset the board and game state
+        const board = document.getElementById('board');
+        const squares = board.getElementsByClassName('square');
+        
+        // Clear all squares (if needed)
+        for (const square of squares) {
+            square.innerHTML = ''; // Assuming pieces are added as HTML
+            square.classList.remove('piece'); // Example of removing class
+        }
+        
+        // Reset any game state variables if applicable
+        document.getElementById('turn').textContent = "White's Turn";
+        
+        // Additional logic to reset the sematary and other elements if needed
+    }
 
-        scripts.forEach(function(script) {
-            var newScript = document.createElement('script');
-            newScript.src = script.src;
-            script.parentNode.removeChild(script);
-            document.body.appendChild(newScript);
-        });
+    document.getElementById('reloadJsButton').addEventListener('click', function() {
+        resetBoard();
+        
+        // Optionally reload scripts if required
+        // var scripts = document.querySelectorAll('script[src]');
+        // scripts.forEach(function(script) {
+        //     var newScript = document.createElement('script');
+        //     newScript.src = script.src;
+        //     script.parentNode.removeChild(script);
+        //     document.body.appendChild(newScript);
+        // });
     });
 </script>
 
