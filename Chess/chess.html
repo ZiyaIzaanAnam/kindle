@@ -120,6 +120,7 @@
 <div style="position:absolute;left:20px;bottom:20px;">
 	
 </div>
+    <button onclick="reloadPage()">Reload Page</button>
 
 <script type="text/javascript" src="pieces/Piece.js"></script>
 <script type="text/javascript" src="pieces/King.js"></script>
@@ -133,6 +134,9 @@
 <script type="text/javascript" src="Board.js"></script>
 
 <script type="text/javascript">
+	        function reloadPage() {
+            window.location.reload();
+        }
 	function boardAnimate(){
 		const board = document.getElementById('board');
 		const elements = board.getElementsByClassName('piece');
