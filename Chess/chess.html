@@ -15,7 +15,7 @@
 <div style="width:600px;margin:auto;position:relative;">
 
     <div id="board">
-                <div id="final" class="odd">
+        <div id="final" class="odd">
             <div id="81" class="square" data-square="8-a"></div>
             <div id="82" class="square" data-square="8-b"></div>
             <div id="83" class="square" data-square="8-c"></div>
@@ -98,7 +98,7 @@
     </div>
 
     <div id="sematary">
-                <div id="whiteSematary">
+        <div id="whiteSematary">
             <div class="pawn"></div>
             <div class="knight"></div>
             <div class="bishop"></div>
@@ -112,8 +112,6 @@
             <div class="rook"></div>
             <div class="queen"></div>
         </div>
-    </div>
-
     </div>
 </div>
 
@@ -133,21 +131,67 @@
 <script type="text/javascript" src="Board.js"></script>
 
 <script>
+    // Define the initial setup of pieces
+    const initialBoardState = [
+        { id: '11', piece: 'rook', color: 'white' },
+        { id: '12', piece: 'knight', color: 'white' },
+        { id: '13', piece: 'bishop', color: 'white' },
+        { id: '14', piece: 'queen', color: 'white' },
+        { id: '15', piece: 'king', color: 'white' },
+        { id: '16', piece: 'bishop', color: 'white' },
+        { id: '17', piece: 'knight', color: 'white' },
+        { id: '18', piece: 'rook', color: 'white' },
+        // Add pawns
+        { id: '21', piece: 'pawn', color: 'white' },
+        { id: '22', piece: 'pawn', color: 'white' },
+        { id: '23', piece: 'pawn', color: 'white' },
+        { id: '24', piece: 'pawn', color: 'white' },
+        { id: '25', piece: 'pawn', color: 'white' },
+        { id: '26', piece: 'pawn', color: 'white' },
+        { id: '27', piece: 'pawn', color: 'white' },
+        { id: '28', piece: 'pawn', color: 'white' },
+        // Add black pieces
+        { id: '11', piece: 'rook', color: ' black' },
+        { id: '12', piece: 'knight', color: ' black' },
+        { id: '13', piece: 'bishop', color: ' black' },
+        { id: '14', piece: 'queen', color: ' black' },
+        { id: '15', piece: 'king', color: ' black' },
+        { id: '16', piece: 'bishop', color: ' black' },
+        { id: '17', piece: 'knight', color: ' black' },
+        { id: '18', piece: 'rook', color: ' black' },
+        // Add pawns
+        { id: '21', piece: 'pawn', color: ' black' },
+        { id: '22', piece: 'pawn', color: ' black' },
+        { id: '23', piece: 'pawn', color: ' black' },
+        { id: '24', piece: 'pawn', color: ' black' },
+        { id: '25', piece: 'pawn', color: ' black' },
+        { id: '26', piece: 'pawn', color: ' black' },
+        { id: '27', piece: 'pawn', color: ' black' },
+        { id: '28', piece: 'pawn', color: ' black' },
+    ];
+
     function resetBoard() {
-        // Implement logic to reset the board and game state
+        // Clear all squares
         const board = document.getElementById('board');
         const squares = board.getElementsByClassName('square');
-        
-        // Clear all squares (if needed)
         for (const square of squares) {
-            square.innerHTML = ''; // Assuming pieces are added as HTML
-            square.classList.remove('piece'); // Example of removing class
+            square.innerHTML = ''; // Clear pieces from squares
         }
-        
-        // Reset any game state variables if applicable
+
+        // Place pieces back to their initial positions
+        initialBoardState.forEach(function(piece) {
+            const square = document.getElementById(piece.id);
+            if (square) {
+                const pieceElement = document.createElement('div');
+                pieceElement.className = piece.piece + ' ' + piece.color; // e.g., "pawn white"
+                square.appendChild(pieceElement);
+            }
+        });
+
+        // Reset turn indicator
         document.getElementById('turn').textContent = "White's Turn";
         
-        // Additional logic to reset the sematary and other elements if needed
+        // Reset any other game state variables if applicable
     }
 
     document.getElementById('reloadJsButton').addEventListener('click', function() {
