@@ -1,295 +1,302 @@
 class Game {
-	constructor(pieces) {
-		this.pieces  = pieces;
-		this.turn    = 'white';
-		this.clickedPiece = null;
-		this._events = {
-			pieceMove: [],
-			kill: [],
-			check: [],
-			promotion: [],
-			checkMate: [],
-			turnChange: []
-		}
-	}
+    constructor(pieces) {
+        this.pieces = pieces;
+        this.turn = 'white';
+        this.clickedPiece = null;
+        this._events = {
+            pieceMove: [],
+            kill: [],
+            check: [],
+            promotion: [],
+            checkMate: [],
+            turnChange: []
+        };
+    }
 
-	clearEvents() {
-		this._events = {};
-	}
+    clearEvents() {
+        this._events = {};
+    }
 
-	on (eventName, callback) {
-		if (this._events[eventName] && typeof callback === 'function') {
-			this._events[eventName].push(callback);
-		}
-	}
+    on(eventName, callback) {
+        if (this._events[eventName] && typeof callback === 'function') {
+            this._events[eventName].push(callback);
+        }
+    }
 
-	changeTurn() {
-		this.turn = this.turn === 'white' ? 'black' : 'white';
-		this.triggerEvent('turnChange', this.turn);
-	}
+    changeTurn() {
+        this.turn = this.turn === 'white' ? 'black' : 'white';
+        this.triggerEvent('turnChange', this.turn);
+    }
 
-	getPiecesByColor(color) {
-		return this.pieces.filter(obj => {
-		  return obj.color === color
-		});
-	}
+    getPiecesByColor(color) {
+        return this.pieces.filter(obj => obj.color === color);
+    }
 
-	getPlayerPositions(color){
-		const pieces = this.getPiecesByColor(color);
-		return pieces.map( a => parseInt(a.position));
-	}
+    getPlayerPositions(color) {
+        const pieces = this.getPiecesByColor(color);
+        return pieces.map(a => parseInt(a.position));
+    }
 
-	filterPositions(positions) {
-		return positions.filter(pos => {
-			const secondDigit = pos.toString().charAt(1);
-			return pos > 10 && pos < 89 && secondDigit < 9 && secondDigit > 0;
-		});
-	};
+    filterPositions(positions) {
+        return positions.filter(pos => {
+            const secondDigit = pos.toString().charAt(1);
+            return pos > 10 && pos < 89 && secondDigit < 9 && secondDigit > 0;
+        });
+    }
 
-	unblockedPositions(piece, allowedPositions, checking=true) {
-		const unblockedPositions = [];
+    unblockedPositions(piece, allowedPositions, checking = true) {
+        const unblockedPositions = [];
 
-		if (piece.color === 'white') {
-			var myBlockedPositions    = this.getPlayerPositions('white');
-			var otherBlockedPositions = this.getPlayerPositions('black');
-		}
-		else{
-			var myBlockedPositions    = this.getPlayerPositions('black');
-			var otherBlockedPositions = this.getPlayerPositions('white');
-		}
+        if (piece.color === 'white') {
+            var myBlockedPositions = this.getPlayerPositions('white');
+            var otherBlockedPositions = this.getPlayerPositions('black');
+        } else {
+            var myBlockedPositions = this.getPlayerPositions('black');
+            var otherBlockedPositions = this.getPlayerPositions('white');
+        }
 
-		if (piece.hasRank('pawn')) {
-			for (const move of allowedPositions[0]) { //attacking moves
-				if (checking && this.myKingChecked(move)) continue;
-				if (otherBlockedPositions.indexOf(move) !== -1) unblockedPositions.push(move);
-			}
-			const blockedPositions = [...myBlockedPositions, ...otherBlockedPositions];
-			for (const move of allowedPositions[1]) { //moving moves
-				if (blockedPositions.indexOf(move) !== -1) {
-					break;
-				}
-				else if (checking && this.myKingChecked(move, false)) continue;
-				unblockedPositions.push(move);
-			}
-		}
-		else{
-			allowedPositions.forEach( (allowedPositionsGroup, index) => {
-				for (const move of allowedPositionsGroup) {
-					if (myBlockedPositions.indexOf(move) !== -1) {
-						break;
-					}
-					else if ( checking && this.myKingChecked(move) ) {
-						if (otherBlockedPositions.indexOf(move) !== -1) {
-							break;
-						}
-						continue;
-					}
-					unblockedPositions.push(move);
+        if (piece.hasRank('pawn')) {
+            for (const move of allowedPositions[0]) { //attacking moves
+                if (checking && this.myKingChecked(move)) continue;
+                if (otherBlockedPositions.indexOf(move) !== -1) unblockedPositions.push(move);
+            }
+            const blockedPositions = [...myBlockedPositions, ...otherBlockedPositions];
+            for (const move of allowedPositions[1]) { //moving moves
+                if (blockedPositions.indexOf(move) !== -1) {
+                    break;
+                } else if (checking && this.myKingChecked(move, false)) continue;
+                unblockedPositions.push(move);
+            }
+        } else {
+            allowedPositions.forEach((allowedPositionsGroup, index) => {
+                for (const move of allowedPositionsGroup) {
+                    if (myBlockedPositions.indexOf(move) !== -1) {
+                        break;
+                    } else if (checking && this.myKingChecked(move)) {
+                        if (otherBlockedPositions.indexOf(move) !== -1) {
+                            break;
+                        }
+                        continue;
+                    }
+                    unblockedPositions.push(move);
 
-					if (otherBlockedPositions.indexOf(move) !== -1) {
-						break;
-					}
-				}
-			});
-		}
+                    if (otherBlockedPositions.indexOf(move) !== -1) {
+                        break;
+                    }
+                }
+            });
+        }
 
-		return this.filterPositions(unblockedPositions);
-	}
+        return this.filterPositions(unblockedPositions);
+    }
 
-	getPieceAllowedMoves(pieceName){
-		const piece = this.getPieceByName(pieceName);
-		if(this.turn === piece.color){
-			this.setClickedPiece(piece);
+    getPieceAllowedMoves(pieceName) {
+        const piece = this.getPieceByName(pieceName);
+        if (this.turn === piece.color) {
+            this.setClickedPiece(piece);
 
-			let pieceAllowedMoves = piece.getAllowedMoves();
-			if (piece.rank === 'king') {
-				pieceAllowedMoves = this.getCastlingSquares(piece, pieceAllowedMoves);
-			}
+            let pieceAllowedMoves = piece.getAllowedMoves();
+            if (piece.rank === 'king') {
+                pieceAllowedMoves = this.getCastlingSquares(piece, pieceAllowedMoves);
+            }
 
-			return this.unblockedPositions(piece, pieceAllowedMoves, true);
-		}
-		else{
-			return [];
-		}
-	}
+            return this.unblockedPositions(piece, pieceAllowedMoves, true);
+        } else {
+            return null;
+        }
+    }
 
-	getCastlingSquares(king, allowedMoves) {
-		if ( !king.ableToCastle || this.king_checked(this.turn) ) return allowedMoves;
-		const rook1 = this.getPieceByName(this.turn+'Rook1');
-		const rook2 = this.getPieceByName(this.turn+'Rook2');
-		if (rook1 && rook1.ableToCastle) {
-			const castlingPosition = rook1.position + 2
-            if(
-                !this.positionHasExistingPiece(castlingPosition - 1) &&
-                !this.positionHasExistingPiece(castlingPosition) && !this.myKingChecked(castlingPosition, true) &&
-                !this.positionHasExistingPiece(castlingPosition + 1) && !this.myKingChecked(castlingPosition + 1, true)
-            )
-			allowedMoves[1].push(castlingPosition);
-		}
-		if (rook2 && rook2.ableToCastle) {
-			const castlingPosition = rook2.position - 1;
-			if(
-                !this.positionHasExistingPiece(castlingPosition - 1) && !this.myKingChecked(castlingPosition - 1, true) &&
-                !this.positionHasExistingPiece(castlingPosition) && !this.myKingChecked(castlingPosition, true)
-            )
-			allowedMoves[0].push(castlingPosition);
-		}
-		return allowedMoves;
-	}
+    getPieceByName(name) {
+        return this.pieces.find(piece => piece.name === name);
+    }
 
-	getPieceByName(piecename) {
-		return this.pieces.filter( obj => obj.name === piecename )[0];
-	}
+    getPieceByPos(position) {
+        return this.pieces.find(piece => piece.position === position);
+    }
 
-	getPieceByPos(piecePosition) {
-		return this.pieces.filter(obj =>  obj.position == piecePosition )[0];
-	}
+    getCastlingSquares(piece, allowedSquares) {
+        const castlingSquares = piece.getCastlingMoves();
+        if (piece.color === 'white') {
+            var blockedPositions = this.getPlayerPositions('white');
+            var opponentPositions = this.getPlayerPositions('black');
+        } else {
+            var blockedPositions = this.getPlayerPositions('black');
+            var opponentPositions = this.getPlayerPositions('white');
+        }
 
-	positionHasExistingPiece(position) {
-		return this.getPieceByPos(position) !== undefined;
-	}
+        for (const move of castlingSquares) {
+            if (blockedPositions.includes(move) || opponentPositions.includes(move)) continue;
+            allowedSquares.push(move);
+        }
 
-	setClickedPiece(piece) {
-		this.clickedPiece = piece;
-	}
+        return allowedSquares;
+    }
 
-	triggerEvent(eventName, params) {
-		if (this._events[eventName]) {
-			for (const cb of this._events[eventName]) {
-				cb(params);
-			}
-		}
-	}
+    myKingChecked(squarePos, kingsCheck = true) {
+        const myKing = this.getPieceByName(this.turn + 'King');
+        const enemyMoves = this.unblockedPositions(
+            this.getPieceByColor(this.turn === 'white' ? 'black' : 'white'),
+            this.getPieceByColor(this.turn === 'white' ? 'black' : 'white').map(enemyPiece => enemyPiece.getAllowedMoves())
+        );
 
-	movePiece(pieceName, position) {
-		const piece = this.getPieceByName(pieceName);
-		const prevPosition = piece.position;
-		position = parseInt(position);
+        if (kingsCheck && enemyMoves.includes(myKing.position)) return true;
+        return false;
+    }
 
-		if (piece && this.getPieceAllowedMoves(piece.name).indexOf(position) !== -1) {
-			const existedPiece = this.getPieceByPos(position)
+    movePiece(pieceName, position) {
+        const piece = this.getPieceByName(pieceName);
+        const piecePosition = piece.position;
+        const destinationPiece = this.getPieceByPos(position);
+        if (destinationPiece) {
+            if (destinationPiece.color === piece.color) {
+                return;
+            }
+            this.triggerEvent('kill', destinationPiece);
+        }
 
-			if (existedPiece) {
-				this.kill(existedPiece);
-			}
+        piece.position = position;
+        this.triggerEvent('pieceMove', piece);
 
-			if (!existedPiece && piece.hasRank('king') && piece.ableToCastle === true) {
-				if (position - prevPosition === 2) {
-					this.castleRook(piece.color + 'Rook2');
-				}
-				else if (position - prevPosition === -2) {
-					this.castleRook(piece.color + 'Rook1');
-				}
-				piece.changePosition(position, true);
-			}
-			else {
-				piece.changePosition(position);
-			}
+        if (piece.hasRank('pawn') && piece.position.toString().charAt(1) === '8' || piece.position.toString().charAt(1) === '1') {
+            this.triggerEvent('promotion', piece.promote());
+        }
 
-			this.triggerEvent('pieceMove', piece);
+        if (this.myKingChecked(piece.position)) {
+            this.triggerEvent('checkMate', this.turn);
+            return;
+        }
 
-			if (piece.rank === 'pawn' && (position > 80 || position < 20)) {
-				this.promote(piece);
-			}
+        this.changeTurn();
+    }
 
-			this.changeTurn();
+    triggerEvent(eventName, ...args) {
+        if (this._events[eventName]) {
+            this._events[eventName].forEach(callback => callback(...args));
+        }
+    }
+}
 
-			if (this.king_checked(this.turn)) {
-				this.triggerEvent('check', this.turn);
+class Piece {
+    constructor(position, name, color) {
+        this.position = position;
+        this.name = name;
+        this.color = color;
+    }
 
-				if (this.king_dead(this.turn)) {
-					this.checkmate(piece.color);
-				}
-				else{
-					// alert('check');
-				}
-			}
+    hasRank(rank) {
+        return this.name.includes(rank);
+    }
+}
 
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
+class King extends Piece {
+    getAllowedMoves() {
+        const currentPos = parseInt(this.position);
+        const allowedMoves = [
+            currentPos + 1, // right
+            currentPos - 1, // left
+            currentPos - 10, // down
+            currentPos + 10, // up
+            currentPos - 9, // bottom-right diagonal
+            currentPos - 11, // bottom-left diagonal
+            currentPos + 9, // top-right diagonal
+            currentPos + 11, // top-left diagonal
+        ];
+        return this.filterMoves(allowedMoves);
+    }
 
-	kill(piece) {
-		this.pieces.splice(this.pieces.indexOf(piece), 1);
-		this.triggerEvent('kill', piece);
-	}
+    getCastlingMoves() {
+        if (this.color === 'white') {
+            return [31, 32];
+        } else {
+            return [81, 82];
+        }
+    }
+}
 
-	castleRook(rookName) {
-		const rook = this.getPieceByName(rookName);
-		const newPosition = rookName.indexOf('Rook2') !== -1 ? rook.position - 2 : rook.position + 3;
+class Queen extends Piece {
+    getAllowedMoves() {
+        const currentPos = parseInt(this.position);
+        const allowedMoves = [];
+        // Horizontal and Vertical Moves
+        for (let i = 1; i < 8; i++) {
+            allowedMoves.push(currentPos + i);
+            allowedMoves.push(currentPos - i);
+            allowedMoves.push(currentPos + i * 10);
+            allowedMoves.push(currentPos - i * 10);
+        }
+        // Diagonal Moves
+        for (let i = 1; i < 8; i++) {
+            allowedMoves.push(currentPos + i * 11);
+            allowedMoves.push(currentPos - i * 11);
+            allowedMoves.push(currentPos + i * 9);
+            allowedMoves.push(currentPos - i * 9);
+        }
+        return this.filterMoves(allowedMoves);
+    }
+}
 
-		this.setClickedPiece(rook);
+class Rook extends Piece {
+    getAllowedMoves() {
+        const currentPos = parseInt(this.position);
+        const allowedMoves = [];
+        // Horizontal and Vertical Moves
+        for (let i = 1; i < 8; i++) {
+            allowedMoves.push(currentPos + i);
+            allowedMoves.push(currentPos - i);
+            allowedMoves.push(currentPos + i * 10);
+            allowedMoves.push(currentPos - i * 10);
+        }
+        return this.filterMoves(allowedMoves);
+    }
+}
 
-		this.movePiece(rookName, newPosition);
-		this.triggerEvent('pieceMove', rook);
-		this.changeTurn();
-	}
+class Bishop extends Piece {
+    getAllowedMoves() {
+        const currentPos = parseInt(this.position);
+        const allowedMoves = [];
+        // Diagonal Moves
+        for (let i = 1; i < 8; i++) {
+            allowedMoves.push(currentPos + i * 11);
+            allowedMoves.push(currentPos - i * 11);
+            allowedMoves.push(currentPos + i * 9);
+            allowedMoves.push(currentPos - i * 9);
+        }
+        return this.filterMoves(allowedMoves);
+    }
+}
 
-	promote(pawn) {
-		const queenName = pawn.name.replace('Pawn', 'Queen');
-		this.pieces.splice(this.pieces.indexOf(pawn), 1);
-		const queen = new Queen(pawn.position, queenName);
-		this.pieces.push(queen);
-		this.triggerEvent('promotion', queen);
-	}
+class Knight extends Piece {
+    getAllowedMoves() {
+        const currentPos = parseInt(this.position);
+        const allowedMoves = [
+            currentPos + 21, currentPos - 21,
+            currentPos + 19, currentPos - 19,
+            currentPos + 12, currentPos - 12,
+            currentPos + 8, currentPos - 8
+        ];
+        return this.filterMoves(allowedMoves);
+    }
+}
 
-	myKingChecked(pos, kill=true){
-		const piece = this.clickedPiece;
-		const originalPosition = piece.position;
-		const otherPiece = this.getPieceByPos(pos);
-		const should_kill_other_piece = kill && otherPiece && otherPiece.rank !== 'king';
-		piece.changePosition(pos);
-		if (should_kill_other_piece) this.pieces.splice(this.pieces.indexOf(otherPiece), 1);
-		if (this.king_checked(piece.color)) {
-			piece.changePosition(originalPosition);
-			if (should_kill_other_piece) {
-				this.pieces.push(otherPiece);
-			}
-			return 1;
-		}
-		else{
-			piece.changePosition(originalPosition);
-			if (should_kill_other_piece) this.pieces.push(otherPiece);
-			return 0;
-		}
-	}
+class Pawn extends Piece {
+    getAllowedMoves() {
+        const currentPos = parseInt(this.position);
+        const allowedMoves = [];
+        if (this.color === 'white') {
+            allowedMoves.push(currentPos + 10); // Move forward
+            if (currentPos < 30) {
+                allowedMoves.push(currentPos + 20); // Double move
+            }
+        } else {
+            allowedMoves.push(currentPos - 10); // Move forward
+            if (currentPos > 60) {
+                allowedMoves.push(currentPos - 20); // Double move
+            }
+        }
+        return this.filterMoves(allowedMoves);
+    }
 
-	king_dead(color) {
-		const pieces = this.getPiecesByColor(color);
-		for (const piece of pieces) {
-			this.setClickedPiece(piece);
-			const allowedMoves = this.unblockedPositions(piece, piece.getAllowedMoves(), true);
-			if (allowedMoves.length) {
-				this.setClickedPiece(null);
-				return 0;
-			}
-		}
-		this.setClickedPiece(null);
-		return 1;
-	}
-
-	king_checked(color) {
-		const piece = this.clickedPiece;
-		const king = this.getPieceByName(color + 'King');
-		const enemyColor = (color === 'white') ? 'black' : 'white';
-		const enemyPieces = this.getPiecesByColor(enemyColor);
-		for (const enemyPiece of enemyPieces) {
-			this.setClickedPiece(enemyPiece);
-			const allowedMoves = this.unblockedPositions(enemyPiece, enemyPiece.getAllowedMoves(), false);
-			if (allowedMoves.indexOf(king.position) !== -1) {
-				this.setClickedPiece(piece);
-				return 1;
-			}
-		}
-		this.setClickedPiece(piece);
-		return 0;
-	}
-
-	checkmate(color){
-		this.triggerEvent('checkMate', color);
-		this.clearEvents();
-	}
+    promote() {
+        return new Queen(this.position, this.name, this.color);
+    }
 }
