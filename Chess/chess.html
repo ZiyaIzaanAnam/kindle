@@ -77,24 +77,24 @@
             <div id="38" class="square" data-square="3-h"></div>
         </div>
         <div class="odd">
-            <div class="square white" id="21" data-square="2-a"></div>
-            <div class="square white" id="22" data-square="2-b"></div>
-            <div class="square white" id="23" data-square="2-c"></div>
-            <div class="square white" id="24" data-square="2-d"></div>
-            <div class="square white" id="25" data-square="2-e"></div>
-            <div class="square white" id="26" data-square="2-f"></div>
-            <div class="square white" id="27" data-square="2-g"></div>
-            <div class="square white" id="28" data-square="2-h"></div>
+            <div class="square" id="21" data-square="2-a"></div>
+            <div class="square" id="22" data-square="2-b"></div>
+            <div class="square" id="23" data-square="2-c"></div>
+            <div class="square" id="24" data-square="2-d"></div>
+            <div class="square" id="25" data-square="2-e"></div>
+            <div class="square" id="26" data-square="2-f"></div>
+            <div class="square" id="27" data-square="2-g"></div>
+            <div class="square" id="28" data-square="2-h"></div>
         </div>
         <div class="even">
-            <div id="11" class="square white" data-square="1-a"></div>
-            <div id="12" class="square white" data-square="1-b"></div>
-            <div id="13" class="square white" data-square="1-c"></div>
-            <div id="14" class="square white" data-square="1-d"></div>
-            <div id="15" class="square white" data-square="1-e"></div>
-            <div id="16" class="square white" data-square="1-f"></div>
-            <div id="17" class="square white" data-square="1-g"></div>
-            <div id="18" class="square white" data-square="1-h"></div>
+            <div id="11" class="square" data-square="1-a"></div>
+            <div id="12" class="square" data-square="1-b"></div>
+            <div id="13" class="square" data-square="1-c"></div>
+            <div id="14" class="square" data-square="1-d"></div>
+            <div id="15" class="square" data-square="1-e"></div>
+            <div id="16" class="square" data-square="1-f"></div>
+            <div id="17" class="square" data-square="1-g"></div>
+            <div id="18" class="square" data-square="1-h"></div>
         </div>
     </div>
 
@@ -172,18 +172,17 @@
 
     function resetBoard() {
         // Clear all squares
-        const board = document.getElementById('board');
-        const squares = board.getElementsByClassName('square');
-        for (const square of squares) {
+        const squares = document.querySelectorAll('#board .square');
+        squares.forEach(square => {
             square.innerHTML = ''; // Clear pieces from squares
-        }
+        });
 
         // Place pieces back to their initial positions
-        initialBoardState.forEach(function(piece) {
+        initialBoardState.forEach(piece => {
             const square = document.getElementById(piece.id);
             if (square) {
                 const pieceElement = document.createElement('div');
-                pieceElement.className = piece.piece + ' ' + piece.color; // e.g., "pawn white"
+                pieceElement.className = `piece ${piece.piece} ${piece.color}`; // e.g., "piece pawn white"
                 square.appendChild(pieceElement);
             }
         });
