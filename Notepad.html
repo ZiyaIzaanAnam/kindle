@@ -45,8 +45,8 @@ h3{
             var txt = document.getElementById('np').value;
             var now = new Date();
             var date = now.toLocaleDateString();
-            var time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12:true });
-            var filename = "Note on " + date.replace(/\//g, '∕') + " " + time.replace(/:/g, '꞉') + ".txt";
+            var time = now.toLocaleTimeString([], { hour: '2-digit', hour12:true });
+            var filename = "Note on " + date.replace(/\//g, '-') + " " + time.replace(/:/g, '') + ".txt";
             
             if (filename) {
                 var blob = new Blob([txt], { type: 'text/plain' });
